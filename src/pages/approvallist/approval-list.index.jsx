@@ -1,0 +1,191 @@
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
+import React, { useEffect, useRef, useState } from 'react';
+import { COLUMN_DEFINITIONS, DEFAULT_PREFERENCES, Preferences } from './table-config';
+import { Flashbar, Pagination, Table, TextFilter,PropertyFilter } from '@cloudscape-design/components';
+import { FullPageHeader ,Breadcrumbs,} from './common-components';
+import {
+  CustomAppLayout,
+  Navigation,
+  Notifications,
+  TableEmptyState,
+  TableNoMatchState,
+  ToolsContent,
+} from '../commons/common-components';
+import { paginationLabels, } from '../../common/labels';
+import { getServerFilterCounterText } from '../../common/tableCounterStrings';
+import { useColumnWidths } from '../commons/use-column-widths';
+import { useLocalStorage } from '../../common/localStorage';
+import {useSimpleNotifications} from '../commons/use-notifications';
+// import remoteApis from "../commons/remote-apis";
+import {useAuthorizedHeader,} from "../commons/use-auth";
+import { useDistributions } from './hooks';
+import intersection from 'lodash/intersection';
+import { FILTERING_PROPERTIES,} from './table-config';
+import {PROPERTY_FILTERING_I18N_CONSTANTS} from '../../common/i18nStrings';
+
+const DEFAULT_FILTERING_QUERY = { tokens: [], operation: 'and' };
+export function TableContent({ 
+  resourceName,
+  buttonName,
+  buttonHref,
+ }) {
+  // const [totalItems,setTotalItems] = useState(0);
+  const [ selectedItems,setSelectedItems] = useState([]);
+  const [ filteringText, setFilteringText] = useState("");
+  const headers = useAuthorizedHeader();
+  const [delayedFilteringText, setDelayedFilteringText] = useState('');
+  const [sortingColumn, setSortingColumn] = useState(COLUMN_DEFINITIONS[0]);
+  const [descendingSorting, setDescendingSorting] = useState(true);
+
+  const [columnDefinitions, saveWidths] = useColumnWidths('React-Table-Widths', COLUMN_DEFINITIONS);
+  const [preferences, setPreferences] = useLocalStorage('React-'+resourceName+'-Preferences', DEFAULT_PREFERENCES);
+  const [currentPageIndex, setCurrentPageIndex] = useState(1);
+  const [filteringQuery, setFilteringQuery] = useState(DEFAULT_FILTERING_QUERY);
+
+  const pageSize = preferences.pageSize;
+  const onClearFilter = () => {
+    setFilteringText('');
+    setDelayedFilteringText('');
+    setFilteringQuery(DEFAULT_FILTERING_QUERY);
+
+  };
+  const onSortingChange = event => {
+    setDescendingSorting(event.detail.isDescending);
+    setSortingColumn(event.detail.sortingColumn);
+  };
+  
+  const params = {
+    pagination: {
+      currentPageIndex,
+      pageSize,
+    },
+    sorting: {
+      sortingColumn,
+      sortingDescending: descendingSorting,
+    },
+    header:headers,
+    filtering: {
+      filteringText: delayedFilteringText,
+      filteringTokens: filteringQuery.tokens,
+      filteringOperation: filteringQuery.operation,
+    },
+  };
+  const { items, loading, totalCount, pagesCount, currentPageIndex: serverPageIndex,refreshAction } = useDistributions(params);
+  // console.log('pagesCount',pagesCount,'currentPageIndex',currentPageIndex)
+
+  useEffect(() => {
+    setSelectedItems(oldSelected => intersection(items, oldSelected));
+  }, [items]);
+
+  const handlePropertyFilteringChange = ({ detail }) => { setFilteringQuery(detail)};
+
+  function handleAddClick(event){
+    event.preventDefault();
+  }
+  return (
+    <Table
+      onSortingChange={onSortingChange}
+      sortingColumn={sortingColumn}
+      sortingDescending={descendingSorting}
+      onSelectionChange={({ detail }) =>
+        setSelectedItems(detail.selectedItems)
+      }
+      selectedItems={selectedItems}
+      ariaLabels={{
+        selectionGroupLabel: "Items selection",
+        allItemsSelectionLabel: ({ selectedItems }) =>
+          `${selectedItems.length} ${
+            selectedItems.length === 1 ? "item" : "items"
+          } selected`,
+        itemSelectionLabel: ({ selectedItems }, item) => {
+          const isItemSelected = selectedItems.filter(
+            i => i.name === item.name
+          ).length;
+          return `${item.name} is ${
+            isItemSelected ? "" : "not"
+          } selected`;
+        }
+      }}
+      columnDefinitions={columnDefinitions}
+      visibleColumns={preferences.visibleContent}
+      items={items}
+      empty = <TableEmptyState resourceName={resourceName} onClearFilter={onClearFilter} />
+      selectionType="single"
+      loading = {loading}
+      loadingText = {"Loading"}
+      variant="full-page"
+      stickyHeader={true}
+      resizableColumns={true}
+      onColumnWidthsChange={saveWidths}
+      wrapLines={preferences.wrapLines}
+      header={
+        <FullPageHeader
+          selectedItems={selectedItems}
+          totalItems={totalCount}
+          serverSide={true}
+          resourceName={resourceName}
+          createButtonText={buttonName}
+          handleAddClick={handleAddClick}
+          refreshAction={refreshAction}
+          href={buttonHref}
+        />
+      }
+      filter={
+        // <TextFilter
+        //   filteringAriaLabel="Filter "
+        //   filteringPlaceholder="Find "
+        //   filteringText={filteringText}
+        //   onChange={({ detail }) =>
+        //       setFilteringText(detail.filteringText)
+        //   }
+        //   onDelayedChange={() => setDelayedFilteringText(filteringText)}
+        //   countText={getFilterCounterText(items, pagesCount, pageSize)}
+        // />
+        <PropertyFilter
+          i18nStrings={PROPERTY_FILTERING_I18N_CONSTANTS}
+          filteringProperties={FILTERING_PROPERTIES}
+          query={filteringQuery}
+          onChange={handlePropertyFilteringChange}
+          countText={`${getServerFilterCounterText(items, pagesCount, pageSize)}`}
+          expandToViewport={true}
+        />
+      }
+      pagination={
+        <Pagination
+          pagesCount={pagesCount}
+          currentPageIndex={serverPageIndex}
+          disabled={loading}
+          onChange={event => setCurrentPageIndex(event.detail.currentPageIndex)}
+          ariaLabels={paginationLabels}
+        />
+      }
+      preferences={<Preferences preferences={preferences} setPreferences={setPreferences} />}
+    />
+  );
+}
+
+export default function ApprovalList () {
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const appLayout = useRef();
+  const {notificationitems} = useSimpleNotifications();
+
+  return (
+    <CustomAppLayout
+      ref={appLayout}
+      navigation={<Navigation activeHref={'/approval-list'} />}
+      notifications={<Flashbar items={notificationitems} />}
+      breadcrumbs={<Breadcrumbs />}
+      content={<TableContent 
+                resourceName="Approvals"
+                buttonName = "Add"
+                buttonHref="/approval-list/createapproval"
+            />}
+      contentType="table"
+      tools={<ToolsContent />}
+      toolsOpen={toolsOpen}
+      onToolsChange={({ detail }) => setToolsOpen(detail.open)}
+      stickyNotifications
+    />
+  );
+}

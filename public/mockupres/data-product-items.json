@@ -1,0 +1,75 @@
+[
+  {
+    "id": "1001",
+    "tableName": "daily_order_details",
+    "databaseName": "online_customer_orders",
+    "producer": "order_dev",
+    "status": "Subscribed",
+    "state": "Activated",
+    "description": "Daily order detail by order id, item id, parition by snapshot date..",
+    "cltags": ["PII","Confidential"],
+    "lastUpdated": "2022-11-23T18:36:06+00:00",
+    "buttonurl":"#url"
+  },
+  {
+    "id": "1002",
+    "tableName": "daily_active_users",
+    "databaseName": "app_online_users",
+    "producer": "app_dev",
+    "status": "Subscribed",
+    "state": "Activated",
+    "description": "Daily order detail by order id, item id, parition by snapshot date..",
+    "cltags": ["PII","Confidential"],
+    "lastUpdated": "2022-11-23T18:36:06+00:00",
+    "buttonurl":"#url"
+  },
+  {
+    "id": "1003",
+    "tableName": "daily_order_details",
+    "databaseName": "abcdef01234567890.cloudfront.net",
+    "producer": "order_dev",
+    "status": "Subscribed",
+    "state": "Activated",
+    "description": "Daily order detail by order id, item id, parition by snapshot date..",
+    "cltags": ["PII","Confidential"],
+    "lastUpdated": "2022-11-23T18:36:06+00:00",
+    "buttonurl":"#url"
+  },
+  {
+    "id": "1004",
+    "tableName": "daily_order_details",
+    "databaseName": "abcdef01234567890.cloudfront.net",
+    "producer": "order_dev",
+    "status": "Subscribed",
+    "state": "Activated",
+    "description": "Daily order detail by order id, item id, parition by snapshot date..",
+    "cltags": ["PII","Confidential"],
+    "lastUpdated": "2022-11-23T18:36:06+00:00",
+    "buttonurl":"#url"
+  },
+  {
+    "id": "1005",
+    "tableName": "daily_order_details",
+    "databaseName": "abcdef01234567890.cloudfront.net",
+    "producer": "order_dev",
+    "status": "-",
+    "state": "Activated",
+    "description": "Daily order detail by order id, item id, parition by snapshot date..",
+    "cltags": ["PII","Confidential"],
+    "lastUpdated": "2022-11-23T18:36:06+00:00",
+    "buttonurl":"#url"
+  },
+  {
+    "id": "1006",
+    "tableName": "daily_order_details",
+    "databaseName": "abcdef01234567890.cloudfront.net",
+    "producer": "order_dev",
+    "status": "-",
+    "state": "Activated",
+    "description": "Daily order detail by order id, item id, parition by snapshot date..",
+    "cltags": ["PII","Confidential"],
+    "lastUpdated": "2022-11-23T18:36:06+00:00",
+    "buttonurl":"#url"
+  }
+
+]

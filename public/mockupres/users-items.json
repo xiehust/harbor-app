@@ -1,0 +1,62 @@
+[
+    {
+        "id":100001,
+        "username":"Winson T",
+        "email":"winson@xxx.com",
+        "group":"orders_dev",
+        "grouptype":"producer",
+        "awsid":"123456789876",
+        "lastupdated":"2022-11-23T18:36:06+00:00",
+        "status":"Active"
+    },
+    {
+        "id":100002,
+        "username":"Tony J",
+        "email":"tonyj@xxx.com",
+        "group":"orders_dev",
+        "grouptype":"producer",
+        "awsid":"123456789876",
+        "lastupdated":"2022-11-23T18:36:06+00:00",
+        "status":"Active"
+    },
+    {
+        "id":100003,
+        "username":"Ada W",
+        "email":"adawn@xxx.com",
+        "group":"finance_ops",
+        "grouptype":"consumer",
+        "awsid":"4321560089876",
+        "lastupdated":"2022-11-23T18:26:06+00:00",
+        "status":"Active"
+    },
+    {
+        "id":100004,
+        "username":"Kenny G",
+        "email":"kenny@xxx.com",
+        "group":"sales_ops",
+        "grouptype":"consumer",
+        "awsid":"9865600898765",
+        "lastupdated":"2022-11-13T18:36:06+00:00",
+        "status":"Active"
+    },
+    {
+        "id":100005,
+        "username":"River X",
+        "email":"river@xxx.com",
+        "group":"central_admin",
+        "grouptype":"central",
+        "awsid":"012345678901",
+        "lastupdated":"2022-11-01T18:36:06+00:00",
+        "status":"Active"
+    },
+    {
+        "id":100006,
+        "username":"Neo",
+        "email":"neo@xxx.com",
+        "group":"ug_dev",
+        "grouptype":"producer",
+        "awsid":"112345678910",
+        "lastupdated":"2022-11-13T18:36:06+00:00",
+        "status":"Inactive"
+    }
+]
